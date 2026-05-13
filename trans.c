@@ -19,6 +19,7 @@ void textFile(FILE *readPtr);
 void updateRecord(FILE *fPtr);
 void newRecord(FILE *fPtr);
 void deleteRecord(FILE *fPtr);
+void checkBalance(FILE *fPtr);
 
 int main(int argc, char *argv[])
 {
@@ -43,7 +44,7 @@ if(strcmp(password, "admin123") != 0)
     }
 
     // enable user to specify action
-    while ((choice = enterChoice()) != 5)
+    while ((choice = enterChoice()) != 6)
     {
         switch (choice)
         {
@@ -65,6 +66,8 @@ if(strcmp(password, "admin123") != 0)
             break;
         case 5:
             checkBalance(cfPtr);
+            break;
+        case 6:
             break;    
         // display if user does not select valid choice
         default:
@@ -95,12 +98,10 @@ void textFile(FILE *readPtr)
         fprintf(writePtr, "%-6s%-16s%-11s%10s\n", "Acct", "Last Name", "First Name", "Balance");
 
         // copy all records from random-access file into text file
-        while (!feof(readPtr))
+        while ((result = fread(&client, sizeof(struct clientData), 1, readPtr)) != 0)
         {
-            result = fread(&client, sizeof(struct clientData), 1, readPtr);
-
             // write single record to text file
-            if (result != 0 && client.acctNum != 0)
+            if (client.acctNum != 0)
             {
                 fprintf(writePtr, "%-6d%-16s%-11s%10.2f\n", client.acctNum, client.lastName, client.firstName,
                         client.balance);
@@ -153,7 +154,6 @@ void updateRecord(FILE *fPtr)
 
 // delete an existing record
 void deleteRecord(FILE *fPtr)
-void checkBalance(FILE *fPtr);
 {
     struct clientData client;                       // stores record read from file
     struct clientData blankClient = {0, "", "", 0}; // blank client
@@ -178,8 +178,36 @@ void checkBalance(FILE *fPtr);
         fseek(fPtr, (accountNum - 1) * sizeof(struct clientData), SEEK_SET);
         // replace existing record with blank record
         fwrite(&blankClient, sizeof(struct clientData), 1, fPtr);
+        printf("Account %d deleted successfully.\n", accountNum);
     } // end else
 } // end function deleteRecord
+
+// check balance of an account
+void checkBalance(FILE *fPtr)
+{
+    struct clientData client = {0, "", "", 0.0};
+    unsigned int accountNum;
+
+    // obtain account number to check
+    printf("%s", "Enter account number to check ( 1 - 100 ): ");
+    scanf("%d", &accountNum);
+
+    // move file pointer to correct record in file
+    fseek(fPtr, (accountNum - 1) * sizeof(struct clientData), SEEK_SET);
+    // read record from file
+    fread(&client, sizeof(struct clientData), 1, fPtr);
+
+    // display error if account does not exist
+    if (client.acctNum == 0)
+    {
+        printf("Account #%d has no information.\n", accountNum);
+    }
+    else
+    {
+        printf("\nAccount Details:\n");
+        printf("%-6d%-16s%-11s%10.2f\n", client.acctNum, client.lastName, client.firstName, client.balance);
+    }
+} // end function checkBalance
 
 // create and insert record
 void newRecord(FILE *fPtr)
@@ -226,7 +254,8 @@ unsigned int enterChoice(void)
                  "2 - update an account\n"
                  "3 - add a new account\n"
                  "4 - delete an account\n"
-                 "5 - end program\n? ");
+                 "5 - check account balance\n"
+                 "6 - end program\n? ");
 
     scanf("%u", &menuChoice); // receive choice from user
     return menuChoice;
