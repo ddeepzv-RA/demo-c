@@ -63,6 +63,9 @@ if(strcmp(password, "admin123") != 0)
         case 4:
             deleteRecord(cfPtr);
             break;
+        case 5:
+            checkBalance(cfPtr);
+            break;    
         // display if user does not select valid choice
         default:
             puts("Incorrect choice");
@@ -150,6 +153,7 @@ void updateRecord(FILE *fPtr)
 
 // delete an existing record
 void deleteRecord(FILE *fPtr)
+void checkBalance(FILE *fPtr);
 {
     struct clientData client;                       // stores record read from file
     struct clientData blankClient = {0, "", "", 0}; // blank client
