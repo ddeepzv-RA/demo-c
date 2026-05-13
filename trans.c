@@ -36,6 +36,9 @@ if(strcmp(password, "admin123") != 0)
 
     // fopen opens the file; exits if file cannot be opened
     if ((cfPtr = fopen("credit.dat", "rb+")) == NULL)
+    printf("\n=================================\n");
+printf("     BANK MANAGEMENT SYSTEM\n");
+printf("=================================\n");
     {
         printf("%s: File could not be opened.\n", argv[0]);
         exit(-1);
