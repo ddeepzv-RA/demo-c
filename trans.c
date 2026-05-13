@@ -109,6 +109,7 @@ void textFile(FILE *readPtr)
         }     // end while
 
         fclose(writePtr); // fclose closes the file
+        printf("Accounts exported to 'accounts.txt' successfully!\n");
     }                     // end else
 } // end function textFile
 
