@@ -3,6 +3,7 @@
 // be placed in the file, and deletes data previously in the file.
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 // clientData structure definition
 struct clientData
 {
@@ -23,6 +24,16 @@ int main(int argc, char *argv[])
 {
     FILE *cfPtr;         // credit.dat file pointer
     unsigned int choice; // user's choice
+    char password[20];
+
+printf("Enter Password: ");
+scanf("%s", password);
+
+if(strcmp(password, "admin123") != 0)
+{
+    printf("Wrong Password!\n");
+    exit(0);
+}
 
     // fopen opens the file; exits if file cannot be opened
     if ((cfPtr = fopen("credit.dat", "rb+")) == NULL)
